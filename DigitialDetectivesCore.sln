@@ -15,6 +15,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{49AE4081-FB04-4EC9-94A3-4BB68A4FBD9D}"
 	ProjectSection(SolutionItems) = preProject
 		Tools\publish-automated.bat = Tools\publish-automated.bat
+		Tools\publish.bat = Tools\publish.bat
+		Tools\remove.sh = Tools\remove.sh
+		Tools\update.sh = Tools\update.sh
 	EndProjectSection
 EndProject
 Global
