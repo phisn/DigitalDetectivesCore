@@ -11,21 +11,18 @@ using System.Threading.Tasks;
 
 namespace Server.Attributes
 {
-    public class PhaseFilterAttribute : ActionFilterAttribute
+    public class GameStateAttribute : ActionFilterAttribute
     {
-
-        public PhaseFilterAttribute(Phase phase)
+        public GameStateAttribute(State state)
         {
-            this.Phase = phase;
+            this.state = state;
         }
-
-        public Phase Phase { get; private set; }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            IGameStateService gameState = context.HttpContext.RequestServices.GetService<IGameStateService>();
+            IGameStorageService gameStorage = context.HttpContext.RequestServices.GetService<IGameStorageService>();
 
-            if (gameState.CurrentPhase != Phase)
+            if (gameStorage.CurrentState != state)
             {
                 context.Result = new BadRequestResult();
                 return;
@@ -33,5 +30,7 @@ namespace Server.Attributes
 
             await next();
         }
+
+        private State state;
     }
 }

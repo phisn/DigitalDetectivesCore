@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Server.Game
 {
-    public enum Phase
+    public enum State
     {
         Collect,
         Setup,

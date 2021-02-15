@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Server.Services
 {
-    public class FileGameStateService : IGameStateService
+    public class FileGameStorageService : IGameStorageService
     {
-        public Phase CurrentPhase => currentPhase;
+        public State CurrentState => currentPhase;
 
-        private Phase currentPhase = Phase.Collect;
+        private State currentPhase = State.Collect;
     }
 }

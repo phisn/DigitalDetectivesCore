@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Server.Services.Interfaces
 {
-    public interface IGameStateService
+    public interface IGameStorageService
     {
-        public Phase CurrentPhase { get; }
+        public State CurrentState { get; }
     }
 }
