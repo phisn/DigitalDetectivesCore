@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Server.ServiceWorker
 {
-    public class GameWorker : BackgroundService
+    public class GameBoardWorker : BackgroundService
     {
-        public GameWorker(ILogger<GameWorker> logger, IBoard boardService)
+        public GameBoardWorker(ILogger<GameBoardWorker> logger, IHardwareService boardService)
         {
             this.logger = logger;
             this.boardService = boardService;
@@ -20,7 +20,7 @@ namespace Server.ServiceWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             boardService.FanEnabled = true;
-
+            
             while (!stoppingToken.IsCancellationRequested)
             {
                 logger.LogInformation("New Worker running at: {time}", DateTimeOffset.Now);
@@ -29,7 +29,7 @@ namespace Server.ServiceWorker
             }
         }
 
-        private IBoard boardService;
-        private ILogger<GameWorker> logger;
+        private IHardwareService boardService;
+        private ILogger<GameBoardWorker> logger;
     }
 }
