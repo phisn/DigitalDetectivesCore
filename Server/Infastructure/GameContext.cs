@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game
+namespace Server.Infastructure
 {
-    public enum State
+    public class GameContext
     {
-        Collect,
-        Setup,
-        Running
     }
 }

@@ -21,4 +21,8 @@
     <PackageReference Include="Unosquare.Raspberry.IO" Version="0.27.1" />
     <PackageReference Include="Unosquare.WiringPi" Version="0.5.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Controller\" />
+    <Folder Include="Infastructure\Repositories\" />
+  </ItemGroup>
 </Project>

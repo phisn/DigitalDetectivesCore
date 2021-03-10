@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Server.ServiceWorker
 {
+    /// <summary>
+    /// Controls fan by temperature
+    /// </summary>
     public class TemperatureWorker : BackgroundService
     {
         public TemperatureWorker(IHardwareService board)
