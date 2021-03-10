@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Entities
+namespace Server.Game.SeedWork
 {
-    public class User
+    public class Entity
     {
-        public long Id { get; set; }
     }
 }

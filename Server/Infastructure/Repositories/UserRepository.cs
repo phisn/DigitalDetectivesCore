@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Repositories
+namespace Server.Infastructure.Repositories
 {
-    public interface IPlayerRepository
+    public class UserRepository
     {
+
     }
 }

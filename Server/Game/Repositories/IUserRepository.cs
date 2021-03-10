@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Entities
+namespace Server.Game.Repositories
 {
-    public class Match
+    public interface IUserRepository
     {
-        public List<Player> Players { get; private set; }
-
     }
 }
