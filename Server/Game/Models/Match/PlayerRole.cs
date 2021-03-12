@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game
+namespace Server.Game.Models.Match
 {
-    public enum RoleType
+    public enum PlayerRole
     {
         Detective,
         Villian

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game
+namespace Server.Game.Models.Match
 {
-    public class TicketBag
+    public struct TicketBag
     {
         public const int 
             DetectiveYellow = 10,
@@ -28,7 +28,7 @@ namespace Server.Game
             };
 
         public static TicketBag Detective()
-            => new TicketBag 
+            => new TicketBag
             {
                 Yellow = DetectiveYellow,
                 Green = DetectiveGreen,
@@ -37,12 +37,67 @@ namespace Server.Game
                 Double = 0
             };
 
-        public int
-            Yellow,
-            Green,
-            Red,
-            Black,
-            Double;
+        public static TicketBag Custom(
+            int yellowTicket,
+            int greenTicket,
+            int redTicket,
+            int blackTicket,
+            int doubleTicket)
+            => new TicketBag
+            {
+                Yellow = yellowTicket,
+                Green = greenTicket,
+                Red = redTicket,
+                Black = blackTicket,
+                Double = doubleTicket
+            };
+
+        public int Yellow { get; private set; }
+        public int Green { get; private set; }
+        public int Red { get; private set; }
+        public int Black { get; private set; }
+        public int Double { get; private set; }
+
+        public void AddTicket(TicketType ticket)
+        {
+            switch (ticket)
+            {
+                case TicketType.Yellow:
+                    ++Yellow;
+                    break;
+                case TicketType.Green:
+                    ++Green;
+                    break;
+                case TicketType.Red:
+                    ++Red;
+                    break;
+                case TicketType.Black:
+                    ++Black;
+                    break;
+            }
+        }
+
+        public void RemoveTicket(TicketType ticket)
+        {
+            switch (ticket)
+            {
+                case TicketType.Yellow:
+                    --Yellow;
+                    break;
+                case TicketType.Green:
+                    --Green;
+                    break;
+                case TicketType.Red:
+                    --Red;
+                    break;
+                case TicketType.Black:
+                    --Black;
+                    break;
+            }
+        }
+
+        public void RemoveDoubleTicket()
+            => --Double;
     }
 
     public enum TicketType
@@ -50,7 +105,6 @@ namespace Server.Game
         Yellow,
         Green,
         Red,
-        Black,
-        Double
+        Black
     }
 }

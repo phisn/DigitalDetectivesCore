@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Entities
+namespace Server.Game.Models.Match
 {
     public class Station : ValueObject
     {
         public static Station At(long position)
             => stations[position];
+
+        public static Station RandomInitial
+            => At(initial[new Random().Next(initial.Count)]);
 
         public TicketType Type { get; }
         public long Position { get; }
@@ -23,6 +26,11 @@ namespace Server.Game.Entities
         private static SortedList<long, Station> stations 
             = new SortedList<long, Station>
         {
+        };
+
+        private static List<long> initial = new List<long>
+        {
+
         };
     }
 }

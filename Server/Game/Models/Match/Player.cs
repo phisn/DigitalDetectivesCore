@@ -5,52 +5,68 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Entities
+namespace Server.Game.Models.Match
 {
     public class Player
     {
         public static Player Villian(
-            User user,
-            int position,
-            int blackTicket)
-        {
-            return Villian(
-                user,
-                position,
-                TicketBag.Villian(blackTicket));
-        }
-
-        public static Player Villian(
-            User user,
-            int position,
+            long position,
+            int order,
             TicketBag tickets)
         {
-            Player player = new Player(
-                user,
+            return new Player(
                 position,
-                RoleType.Villian);
+                order,
+                PlayerRole.Villian,
+                PlayerColor.Villian)
+            {
+                Tickets = tickets
+            };
+        }
 
-            player.Tickets = tickets;
-
-            return player;
+        public static Player Detective(
+            PlayerColor color,
+            long position,
+            int order,
+            TicketBag tickets)
+        {
+            return new Player(
+                position,
+                order,
+                PlayerRole.Villian,
+                color)
+            {
+                Tickets = tickets,
+            };
         }
 
         [Key, ForeignKey("User")]
         public long Id { get; private set; }
 
         public int Order { get; private set; }
-
+        
         public TicketBag Tickets { get; private set; }
-        public RoleType Role { get; private set; }
-        public List<Station> Path { get; private set; }
+        public PlayerRole Role { get; private set; }
+        public PlayerColor Color { get; private set; }
+        public Station Initial { get; set; }
 
-        public User User { get; set; }
+        private List<Route> path { get; set; }
+        public IReadOnlyCollection<Route> Path => path;
 
         public long MatchId { get; private set; }
         public Match Match { get; set; }
 
+        public Station Station =>
+            Station.At(path[path.Count - 1].To.Position);
 
-        public Station CurrentStation => Path.First();
+        public Route RouteWith(long target, TicketType type)
+            => Route.RoutesBetween(Station, Station.At(target))
+                .FirstOrDefault(r => r.Type == type);
+
+        public List<Route> ValidRoutes
+            => Route.RoutesFrom(Station)
+                .Where(r => IsValidRoute(r))
+                .ToList();
 
         public bool HasAnyTicket(TicketType type)
             => type switch
@@ -59,48 +75,60 @@ namespace Server.Game.Entities
                 TicketType.Green => Tickets.Green > 0,
                 TicketType.Red => Tickets.Red > 0,
                 TicketType.Black => Tickets.Black > 0,
-                TicketType.Double => Tickets.Double > 0,
                 _ => throw new NotImplementedException()
             };
 
         public void MakeTurn(
+            long targetPosition,
             TicketType ticket,
-            long targetPosition)
+            bool useDoubleTicket)
         {
-            if (Match.CurrentPlayer != this)
+            if (!HasAnyTicket(ticket))
             {
-                throw new Exception("Invalid turn");
+                throw new ArgumentException($"Ticket '{ticket.ToString()}' not available anymore");
             }
 
-            if (HasAnyTicket(ticket))
+            if (useDoubleTicket && Tickets.Double == 0)
             {
-                throw new ArgumentException("Missing ticket");
+                throw new ArgumentException("Double ticket not available");
             }
 
-            Route route = Route.RoutesFrom(Station.At(CurrentStation.Position))
-                .FirstOrDefault(r =>
-                    r.To.Position == targetPosition &&
-                    r.Type == ticket);
+            Route route = RouteWith(targetPosition, ticket);
 
             if (route == null)
             {
                 throw new ArgumentException("Invalid target position");
             }
 
-            Path.Add(Station.At(targetPosition));
-            Match.SelectNextPlayer();
+            if (!IsValidRoute(route))
+            {
+                throw new ArgumentException("Invalid route selected");
+            }
+
+            Tickets.RemoveTicket(ticket);
+            path.Add(route);
+
+            if (useDoubleTicket)
+            {
+                Tickets.RemoveDoubleTicket();
+            }
         }
 
-        private Player(
-            User user,
-            int initialPosition,
-            RoleType role)
-        {
-            Path.Add(Station.At(initialPosition));
+        private bool IsValidRoute(Route route)
+            => HasAnyTicket(route.Type) &&
+            // neither detectives nor the villian should 
+            // be able to walk on detectives
+                !Match.Detectives.Any(d => d.Station == route.To);
 
-            Id = user.Id;
-            User = user ?? throw new ArgumentException();
+        private Player(
+            long initialPosition,
+            int order,
+            PlayerRole role,
+            PlayerColor color)
+        {
+            Initial = Station.At(initialPosition);
             Role = role;
+            Color = color;
         }
     }
 }

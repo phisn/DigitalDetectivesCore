@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Game.Entities
+namespace Server.Game.Models.Match
 {
     public class Route : ValueObject
     {
