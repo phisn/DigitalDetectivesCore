@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.Game.SeedWork;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server.Game.Models.Match
 {
-    public class Player
+    public class Player : Entity
     {
         public static Player Villian(
             long position,
@@ -40,8 +41,7 @@ namespace Server.Game.Models.Match
             };
         }
 
-        [Key, ForeignKey("User")]
-        public long Id { get; private set; }
+        public override long Id { get; protected set; }
 
         public int Order { get; private set; }
         

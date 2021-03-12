@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace Server.Game.SeedWork
 {
-    public class Entity
+    public abstract class Entity
     {
+        public abstract long Id { get; protected set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Entity entity &&
+                   Id == entity.Id;
+        }
+
+        public static bool operator ==(Entity left, Entity right)
+            => left.Equals(right);
+        public static bool operator !=(Entity left, Entity right)
+            => !(left == right);
+
         protected void AddDomainEvent(INotification domainEvent)
         {
             if (domainEvents == null)

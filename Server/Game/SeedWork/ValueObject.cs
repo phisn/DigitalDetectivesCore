@@ -5,7 +5,13 @@ using System.Threading.Tasks;
 
 namespace Server.Game.SeedWork
 {
-    public class ValueObject
+    public abstract class ValueObject
     {
+        public override abstract bool Equals(object obj);
+
+        public static bool operator ==(ValueObject left, ValueObject right)
+            => left.Equals(right);
+        public static bool operator !=(ValueObject left, ValueObject right)
+            => !(left == right);
     }
 }

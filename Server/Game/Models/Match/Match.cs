@@ -10,13 +10,11 @@ namespace Server.Game.Models.Match
 {
     public class Match : Entity
     {
-        public Match(
-            int playerCount,
-            MatchSettings settings)
+        public Match(MatchSettings settings)
         {
-            if (playerCount < 3 || playerCount > 6)
+            if (settings.Valid)
             {
-                throw new ArgumentException("Invalid player count");
+                throw new ArgumentException("Got invalid settings");
             }
 
             MatchState = MatchState.Running;
@@ -26,7 +24,7 @@ namespace Server.Game.Models.Match
             Random random = new Random();
 
             foreach ((int index, int player) in Enumerable
-                .Range(1, playerCount - 1)
+                .Range(1, settings.PlayerCount - 1)
                 .OrderBy(_ => random.Next())
                 .Select((k, p) => (k, p)))
             {
@@ -40,17 +38,10 @@ namespace Server.Game.Models.Match
             players.Add(CurrentPlayer = Player.Villian(
                 Station.RandomInitial.Position,
                 0,
-                TicketBag.Custom(
-                    settings.VillianTickets.Yellow,
-                    settings.VillianTickets.Green,
-                    settings.VillianTickets.Red,
-                    settings.VillianTickets.Black,
-                    settings.VillianTickets.Double 
-                    + settings.VillianBlackTicketMulti * (playerCount - 1))
-                ));
+                settings.VillianTickets));
         }
 
-        public long Id { get; private set; }
+        public override long Id { get; protected set; }
 
         public int Round { get; set; }
         public MatchSettings Settings { get; private set; }
@@ -93,7 +84,7 @@ namespace Server.Game.Models.Match
                 if (CurrentPlayer.Station == Villian.Station)
                 {
                     MatchState = MatchState.DetectivesWon;
-                    AddDomainEvent(new MatchOverDomainEvent());
+                    AddDomainEvent(new MatchOverDomainEvent(this));
                 }
             }
             else
@@ -113,7 +104,7 @@ namespace Server.Game.Models.Match
                 if (Round >= Settings.Rounds)
                 {
                     MatchState = MatchState.VillianWon;
-                    AddDomainEvent(new MatchOverDomainEvent());
+                    AddDomainEvent(new MatchOverDomainEvent(this));
                 }
             }
 
@@ -137,7 +128,7 @@ namespace Server.Game.Models.Match
                 MatchState = CurrentPlayer.Role == PlayerRole.Detective
                     ? MatchState.VillianWon
                     : MatchState.DetectivesWon;
-                AddDomainEvent(new MatchOverDomainEvent());
+                AddDomainEvent(new MatchOverDomainEvent(this));
             }
 
             AddDomainEvent(new MatchTurnOverDomainEvent());

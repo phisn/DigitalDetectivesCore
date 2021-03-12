@@ -31,6 +31,14 @@ namespace Server.Game.Models.Match
         public Route Inverted 
             => new Route(Type, To.Position, From.Position);
 
+        public override bool Equals(object obj)
+        {
+            return obj is Route route &&
+                From.Equals(route.From) &&
+                To.Equals(route.To) &&
+                Type == route.Type;
+        }
+
         private static ILookup<long, Route> routes = new List<Route>
         {
         }

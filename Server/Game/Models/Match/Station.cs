@@ -17,6 +17,12 @@ namespace Server.Game.Models.Match
         public TicketType Type { get; }
         public long Position { get; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Station station &&
+                   Position == station.Position;
+        }
+
         private Station(TicketType type, long position)
         {
             Type = type;
