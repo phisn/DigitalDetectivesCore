@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Game.Events
 {
-    public class MatchTurnOverDomainEvent : INotification
+    public class MatchVillianRevealedGameEvent : INotification
     {
     }
 }

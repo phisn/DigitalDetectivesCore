@@ -21,14 +21,14 @@ namespace Server.Game.SeedWork
         public static bool operator !=(Entity left, Entity right)
             => !(left == right);
 
-        protected void AddDomainEvent(INotification domainEvent)
+        protected void AddGameEvent(INotification domainEvent)
         {
-            if (domainEvents == null)
-                domainEvents = new List<INotification>();
+            if (gameEvents == null)
+                gameEvents = new List<INotification>();
 
-            domainEvents.Add(domainEvent);
+            gameEvents.Add(domainEvent);
         }
 
-        private List<INotification> domainEvents;
+        private List<INotification> gameEvents;
     }
 }

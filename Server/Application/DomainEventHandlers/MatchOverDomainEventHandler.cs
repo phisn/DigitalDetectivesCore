@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Server.Application.DomainEventHandlers
 {
     public class MatchOverDomainEventHandler
-        : INotificationHandler<MatchOverDomainEvent>
+        : INotificationHandler<MatchOverGameEvent>
     {
         public MatchOverDomainEventHandler(
             GameStateService stateService)
@@ -18,7 +18,7 @@ namespace Server.Application.DomainEventHandlers
             this.stateService = stateService;
         }
 
-        public async Task Handle(MatchOverDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(MatchOverGameEvent notification, CancellationToken cancellationToken)
         {
 
         }

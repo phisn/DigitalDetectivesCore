@@ -84,7 +84,7 @@ namespace Server.Game.Models.Match
                 if (CurrentPlayer.Station == Villian.Station)
                 {
                     MatchState = MatchState.DetectivesWon;
-                    AddDomainEvent(new MatchOverDomainEvent(this));
+                    AddGameEvent(new MatchOverGameEvent(this));
                 }
             }
             else
@@ -93,18 +93,18 @@ namespace Server.Game.Models.Match
                 Debug.Assert(!Detectives.Any(p => p.Station == CurrentPlayer.Station));
                 
                 ++Round;
-                AddDomainEvent(new MatchRoundOverDomainEvent());
+                AddGameEvent(new MatchRoundOverGameEvent());
 
                 if (IsVillianRevealRound)
                 {
                     lastStationVillianReveal = Villian.Station.Position;
-                    AddDomainEvent(new MatchVillianRevealedDomainEvent());
+                    AddGameEvent(new MatchVillianRevealedGameEvent());
                 }
 
                 if (Round >= Settings.Rounds)
                 {
                     MatchState = MatchState.VillianWon;
-                    AddDomainEvent(new MatchOverDomainEvent(this));
+                    AddGameEvent(new MatchOverGameEvent(this));
                 }
             }
 
@@ -128,10 +128,10 @@ namespace Server.Game.Models.Match
                 MatchState = CurrentPlayer.Role == PlayerRole.Detective
                     ? MatchState.VillianWon
                     : MatchState.DetectivesWon;
-                AddDomainEvent(new MatchOverDomainEvent(this));
+                AddGameEvent(new MatchOverGameEvent(this));
             }
 
-            AddDomainEvent(new MatchTurnOverDomainEvent());
+            AddGameEvent(new MatchTurnOverGameEvent());
         }
 
         public List<Player> Detectives
