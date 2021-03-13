@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Server.Application.Hubs;
 using Server.Application.Services;
 using Server.Game.Events;
 using System;
@@ -13,16 +14,15 @@ namespace Server.Application.DomainEventHandlers
         : INotificationHandler<MatchOverGameEvent>
     {
         public MatchOverDomainEventHandler(
-            GameStateService stateService)
+            GameHub gameHub)
         {
-            this.stateService = stateService;
+            this.gameHub = gameHub;
         }
 
         public async Task Handle(MatchOverGameEvent notification, CancellationToken cancellationToken)
         {
-
         }
 
-        private GameStateService stateService;
+        private GameHub gameHub;
     }
 }
