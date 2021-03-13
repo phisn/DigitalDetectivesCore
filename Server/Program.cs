@@ -24,12 +24,9 @@ namespace Server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    Pi.Init<BootstrapWiringPi>();
-
-                    services.AddScoped<IHardwareService, RaspberryHardwareService>();
-                    services.AddHostedService<GameBoardWorker>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }
