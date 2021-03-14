@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Server.Game.Models.Match;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,5 +9,11 @@ namespace Server.Game.Events
 {
     public class MatchTurnOverGameEvent : INotification
     {
+        public Match Match { get; set; }
+
+        public MatchTurnOverGameEvent(Match match)
+        {
+            Match = match;
+        }
     }
 }
