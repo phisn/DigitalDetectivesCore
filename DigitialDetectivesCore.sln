@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Client", "Client\Client.njsproj", "{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protobuf", "Protobuf", "{594D293C-7A57-4BC2-B50B-8B8A1C7E2999}"
 	ProjectSection(SolutionItems) = preProject
 		Message.proto = Message.proto
@@ -28,14 +26,6 @@ Global
 		Release|Arm = Release|Arm
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Debug|Arm.ActiveCfg = Debug|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Debug|Arm.Build.0 = Debug|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Release|Arm.ActiveCfg = Release|Any CPU
-		{F7BE9DB2-012A-4F19-9124-4E8316FE1BA3}.Release|Arm.Build.0 = Release|Any CPU
 		{E0879527-3DB8-4017-B46F-1D4C2634F441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0879527-3DB8-4017-B46F-1D4C2634F441}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0879527-3DB8-4017-B46F-1D4C2634F441}.Debug|Arm.ActiveCfg = Debug|Any CPU
