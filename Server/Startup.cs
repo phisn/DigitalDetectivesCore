@@ -22,7 +22,7 @@ namespace Server
         {
             services.AddSpaStaticFiles(config =>
             {
-                config.RootPath = "Client/dist";
+                config.RootPath = "Client";
             });
             // services.AddMediatR(typeof(Startup));
         }
@@ -36,6 +36,10 @@ namespace Server
 
             app.UseRouting();
             app.UseSpaStaticFiles();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "Client";
+            });
         }
 
         private IConfiguration configuration;

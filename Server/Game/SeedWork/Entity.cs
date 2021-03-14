@@ -16,6 +16,12 @@ namespace Server.Game.SeedWork
                    Id == entity.Id;
         }
 
+        public void ClearEvents()
+            => gameEvents.Clear();
+
+        public IReadOnlyCollection<INotification> GameEvents 
+            => gameEvents;
+
         public static bool operator ==(Entity left, Entity right)
             => left.Equals(right);
         public static bool operator !=(Entity left, Entity right)
@@ -28,7 +34,7 @@ namespace Server.Game.SeedWork
 
             gameEvents.Add(domainEvent);
         }
-
+        
         private List<INotification> gameEvents;
     }
 }
