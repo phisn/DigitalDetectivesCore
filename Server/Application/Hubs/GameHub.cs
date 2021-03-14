@@ -8,5 +8,11 @@ namespace Server.Application.Hubs
 {
     public class GameHub : Hub<IGameHubClient>
     {
+        public override Task OnConnectedAsync()
+        {
+            Clients.Caller.OnTurn();
+
+            return base.OnConnectedAsync();
+        }
     }
 }
