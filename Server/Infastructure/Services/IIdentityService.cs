@@ -7,6 +7,6 @@ namespace Server.Application.Services
 {
     public interface IIdentityService
     {
-
+        Guid User { get; }
     }
 }
