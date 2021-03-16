@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "~11.2.0",
     "@angular/router": "~11.2.0",
     "@ionic/angular": "^5.5.2",
+    "@microsoft/signalr": "^5.0.4",
     "protobufjs": "^6.10.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
