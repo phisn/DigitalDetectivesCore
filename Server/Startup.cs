@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Server.Application.Hubs;
 using Server.Application.Services;
+using Server.Game.Models.Match;
 using Server.Infrastructure.Middleware;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,10 @@ namespace Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // infrastructure
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                     .AddScoped<IIdentityService, IdentityService>();
+            //      .AddMediatR(typeof(Startup));
 
             services.AddSpaStaticFiles(config =>
             {
@@ -36,10 +39,18 @@ namespace Server
             services.AddSignalR()
                 .AddNewtonsoftJsonProtocol();
 
-            //      .AddMediatR(typeof(Startup));
+            // application
+            services
+                .AddSingleton<IIngameService, IngameService>()
+                .AddSingleton<IUserPlayerMappingService, UserPlayerMappingService>()
+                .AddScoped<IUserIngameService, UserIngameService>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostEnvironment env,
+            // TODO: remove after testing
+            IIngameService ingameService)
         {
             if (env.IsDevelopment())
             {
@@ -56,7 +67,7 @@ namespace Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<GameHub>("/ingamehub");
+                endpoints.MapHub<IngameHub>("/ingamehub");
             });
             
             app.UseSpa(spa =>
@@ -68,6 +79,9 @@ namespace Server
                     spa.UseAngularCliServer("start");
                 }
             });
+
+            ingameService.StartMatch(
+                new Match(MatchSettings.Default));
         }
 
         private IConfiguration configuration;

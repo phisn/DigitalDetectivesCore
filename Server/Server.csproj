@@ -33,14 +33,14 @@
     <PackageReference Include="Unosquare.Raspberry.IO" Version="0.27.1" />
     <PackageReference Include="Unosquare.WiringPi" Version="0.5.1" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Infastructure\Migrations\" />
-  </ItemGroup>
     
   <ItemGroup>
+    <Compile Remove="Infastructure\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Infastructure\**" />
+    <EmbeddedResource Remove="Infastructure\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="Infastructure\**" />
     <!--None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" /-->
   </ItemGroup>
 
