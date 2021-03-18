@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { IngamePageRoutingModule } from './ingame-routing.module';
 
 import { IngamePage } from './ingame.page';
+import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-info.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { IngamePage } from './ingame.page';
     IonicModule,
     IngamePageRoutingModule
   ],
-  declarations: [IngamePage]
+  declarations: [
+    IngamePage,
+    PlayerTicketInfoComponent
+  ]
 })
 export class IngamePageModule {}

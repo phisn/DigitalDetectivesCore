@@ -1,52 +1,73 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>You are playing as Detective</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-	<ion-list>
-		<ion-list-header>Info</ion-list-header>
-		<ion-item>
-			<ion-label>Your position</ion-label>
-			<ion-label slot="end">152</ion-label>
-		</ion-item>
-		<ion-item>
-			<ion-label>Villian revealed in</ion-label>
-			<ion-label slot="end">152</ion-label>
-		</ion-item>
-	</ion-list>
-	<ion-list>
-		<ion-list-header>Tickets</ion-list-header>
-		<ion-item>
-			<ion-label style="font-size: large; --background: yellow">Taxi</ion-label>
-			<ion-label slot="end">5 remaining</ion-label>
-			<ion-select slot="end" value="test" interface="action-sheet">
-				<ion-select-option value="52">52</ion-select-option>
-				<ion-select-option value="53">53</ion-select-option>
-				<ion-select-option value="54">54</ion-select-option>
-				<ion-select-option value="55">55</ion-select-option>
-			</ion-select>
-		</ion-item>
-		<ion-item>
-			<ion-label style="font-size: large; --background: yellow">Bus</ion-label>
-			<ion-label slot="end">5 remaining</ion-label>
-			<ion-select slot="end" value="test" interface="action-sheet">
-				<ion-select-option value="52">52</ion-select-option>
-				<ion-select-option value="53">53</ion-select-option>
-				<ion-select-option value="54">54</ion-select-option>
-				<ion-select-option value="55">55</ion-select-option>
-			</ion-select>
-		</ion-item>
-		<ion-item>
-			<ion-label style="font-size: large; --background: yellow">Underground</ion-label>
-			<ion-label slot="end">5 remaining</ion-label>
-			<ion-select slot="end" value="test" interface="action-sheet">
-				<ion-select-option value="52">52</ion-select-option>
-				<ion-select-option value="53">53</ion-select-option>
-				<ion-select-option value="54">54</ion-select-option>
-				<ion-select-option value="55">55</ion-select-option>
-			</ion-select>
-		</ion-item>
-	</ion-list>
-</ion-content>
+<ng-container *ngIf="getModel() != null">
+	<ion-header>
+	<ion-toolbar>
+		<ion-title>You are playing as {{isDetective() ? "Detective" : "Villian" }}
+		</ion-title>
+	</ion-toolbar>
+	</ion-header>
+	<ion-content>
+		<ion-list>
+			<ion-list-header>Info</ion-list-header>
+			<ion-item>
+				<ion-label>Your position</ion-label>
+				<ion-label slot="end">{{getModel().position}}</ion-label>
+			</ion-item>
+			<ion-item>
+				<ion-label>Villian revealed in</ion-label>
+				<ion-label slot="end">{{getModel().villianRevealedIn}}</ion-label>
+			</ion-item>
+			<ion-item button (click)="showTicketsModal()">
+				<ion-icon name="arrow-forward-outline"></ion-icon>
+				<ion-label style="padding-left: 10pt;">Player Ticket Info</ion-label>
+			</ion-item>
+		</ion-list>
+		<ion-list>
+			<ion-list-header>Tickets</ion-list-header>
+			<ion-item *ngIf="getModel().tickets.yellow > 0">
+				<ion-label style="font-size: large; --background: yellow">Taxi</ion-label>
+				<ion-label slot="end">{{getModel().tickets.yellow}} remaining</ion-label>
+				<ion-select *ngIf="getRoutesFor(TicketType.Yellow).length > 0"
+					slot="end" value="yellow" interface="action-sheet" >
+					<ion-select-option 
+						*ngFor="let route of getRoutesFor(TicketType.Yellow)"
+						value="{{route.position}}">{{route.position}}</ion-select-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="getModel().tickets.green > 0">
+				<ion-label style="font-size: large;">Bus</ion-label>
+				<ion-label slot="end">{{getModel().tickets.green}} remaining</ion-label>
+				<ion-select *ngIf="getRoutesFor(TicketType.Green).length > 0"
+					slot="end" value="green" interface="action-sheet" >
+					<ion-select-option 
+						*ngFor="let route of getRoutesFor(TicketType.Green)"
+						value="{{route.position}}">{{route.position}}</ion-select-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="getModel().tickets.red > 0">
+				<ion-label style="font-size: large;">Underground</ion-label>
+				<ion-label slot="end">{{getModel().tickets.red}} remaining</ion-label>
+				<ion-select *ngIf="getRoutesFor(TicketType.Red).length > 0"
+					slot="end" value="red" interface="action-sheet" >
+					<ion-select-option 
+						*ngFor="let route of getRoutesFor(TicketType.Red)"
+						value="{{route.position}}">{{route.position}}</ion-select-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="getModel().tickets.black > 0">
+				<ion-label slot="start" style="font-size: large;">Black</ion-label>
+				<ion-label>{{getModel().tickets.black}} remaining</ion-label>
+				<ion-select *ngIf="getRoutesFor(TicketType.Black).length > 0"
+					slot="end" value="black" interface="action-sheet" >
+					<ion-select-option 
+						*ngFor="let route of getRoutesFor(TicketType.Black)"
+						value="{{route.position}}">{{route.position}}</ion-select-option>
+				</ion-select>
+			</ion-item>
+			<ion-item *ngIf="getModel().tickets.double == 0">
+				<ion-label slot="start" style="font-size: large;">Double</ion-label>
+				<ion-label>{{getModel().tickets.double}} remaining</ion-label>
+				<ion-toggle slot="end"></ion-toggle>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ng-container>

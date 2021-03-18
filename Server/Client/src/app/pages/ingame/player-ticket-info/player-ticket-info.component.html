@@ -1,0 +1,61 @@
+<ion-header translucent>
+	<ion-toolbar>
+		<ion-buttons slot="start">
+			<ion-button (click)="closeModal()">
+				<ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+			</ion-button>
+		  </ion-buttons>
+		<ion-title>Player Tickets</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-list *ngIf="isDetective()">
+		<ion-list-header>Villian Tickets</ion-list-header>
+		<ion-item *ngIf="assertDetective().villianTickets.yellow > 0">
+			<ion-label>Taxi</ion-label>
+			<ion-label>{{assertDetective().villianTickets.yellow}}</ion-label>
+		</ion-item>
+		<ion-item *ngIf="assertDetective().villianTickets.green > 0">
+			<ion-label>Bus</ion-label>
+			<ion-label>{{assertDetective().villianTickets.green}}</ion-label>
+		</ion-item>
+		<ion-item *ngIf="assertDetective().villianTickets.red > 0">
+			<ion-label>Underground</ion-label>
+			<ion-label>{{assertDetective().villianTickets.red}}</ion-label>
+		</ion-item>
+		<ion-item *ngIf="assertDetective().villianTickets.black > 0">
+			<ion-label>Black</ion-label>
+			<ion-label>{{assertDetective().villianTickets.black}}</ion-label>
+		</ion-item>
+		<ion-item *ngIf="assertDetective().villianTickets.double > 0">
+			<ion-label>Double</ion-label>
+			<ion-label>{{assertDetective().villianTickets.double}}</ion-label>
+		</ion-item>
+	</ion-list>
+	<ng-container *ngIf="isVillian()">
+		<ion-list *ngFor="let ticketBag of assertVillian().detectiveTickets">
+			<ion-list-header>Tickets for {{ticketBag.color.toString()}}</ion-list-header>
+			<ion-item *ngIf="ticketBag.tickets.yellow > 0">
+				<ion-label>Taxi</ion-label>
+				<ion-label>{{ticketBag.tickets.yellow}}</ion-label>
+			</ion-item>
+			<ion-item *ngIf="ticketBag.tickets.green > 0">
+				<ion-label>Bus</ion-label>
+				<ion-label>{{ticketBag.tickets.green}}</ion-label>
+			</ion-item>
+			<ion-item *ngIf="ticketBag.tickets.red > 0">
+				<ion-label>Underground</ion-label>
+				<ion-label>{{ticketBag.tickets.red}}</ion-label>
+			</ion-item>
+			<ion-item *ngIf="ticketBag.tickets.black > 0">
+				<ion-label>Black</ion-label>
+				<ion-label>{{ticketBag.tickets.black}}</ion-label>
+			</ion-item>
+			<ion-item *ngIf="ticketBag.tickets.double > 0">
+				<ion-label>Double</ion-label>
+				<ion-label>{{ticketBag.tickets.double}}</ion-label>
+			</ion-item>
+		</ion-list>
+	</ng-container>
+</ion-content>
