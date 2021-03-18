@@ -14,7 +14,7 @@ namespace Server.Application.DomainEventHandlers
         : INotificationHandler<MatchOverGameEvent>
     {
         public MatchOverDomainEventHandler(
-            GameHub gameHub)
+            IngameHub gameHub)
         {
             this.gameHub = gameHub;
         }
@@ -23,6 +23,6 @@ namespace Server.Application.DomainEventHandlers
         {
         }
 
-        private GameHub gameHub;
+        private IngameHub gameHub;
     }
 }

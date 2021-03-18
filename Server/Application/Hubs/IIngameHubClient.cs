@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs
 {
-    public interface IGameHubClient
+    public interface IIngameHubClient
     {
         Task OnTurnDetective(TurnDetectiveEvent turnEvent);
         Task OnTurnVillian(TurnVillianEvent turnEvent);
