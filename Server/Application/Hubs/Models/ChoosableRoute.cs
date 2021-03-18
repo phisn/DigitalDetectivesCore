@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class TurnVillianEvent : IngameEvent
+    public class ChoosableRoute
     {
-        public List<TicketBagForPlayer> DetectiveTickets { get; set; }
-        public List<ChoosableRoute> Routes { get; set; }
+        public long Position { get; set; }
+        public TicketType Type { get; set; }
     }
 }

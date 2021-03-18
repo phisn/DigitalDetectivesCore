@@ -8,6 +8,7 @@ namespace Server.Application.Hubs
 {
     public interface IGameHubClient
     {
-        void OnTurn(ITurnEvent turnEvent);
+        Task OnTurnDetective(TurnDetectiveEvent turnEvent);
+        Task OnTurnVillian(TurnVillianEvent turnEvent);
     }
 }
