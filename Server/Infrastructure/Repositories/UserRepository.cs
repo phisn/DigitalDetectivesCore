@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Infastructure
+namespace Server.Infrastructure.Repositories
 {
-    public class GameContext
+    public class UserRepository
     {
+
     }
 }

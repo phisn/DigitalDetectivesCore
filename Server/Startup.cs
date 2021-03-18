@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Server.Application.Hubs;
 using Server.Application.Services;
-using Server.Infastructure.Middleware;
+using Server.Infrastructure.Middleware;
 using System;
 using System.Collections.Generic;
 using System.IO;
