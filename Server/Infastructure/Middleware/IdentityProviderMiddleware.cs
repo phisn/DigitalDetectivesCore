@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,12 @@ namespace Server.Infastructure.Middleware
     {
         private readonly RequestDelegate _next;
 
-        public IdentityProviderMiddleware(RequestDelegate next)
+        public IdentityProviderMiddleware(
+            RequestDelegate next,
+            ILogger<IdentityProviderMiddleware> logger)
         {
             _next = next;
+            this.logger = logger;
         }
 
         public Task Invoke(HttpContext httpContext)
@@ -25,12 +29,15 @@ namespace Server.Infastructure.Middleware
             {
                 identity = Guid.NewGuid().ToString();
                 httpContext.Response.Cookies.Append("identity", identity);
+                logger.LogInformation($"created identity {identity}");
             }
 
             httpContext.Items["identity"] = identity;
 
             return _next(httpContext);
         }
+
+        private ILogger<IdentityProviderMiddleware> logger;
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.
