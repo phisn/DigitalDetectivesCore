@@ -17,7 +17,7 @@ namespace Server.Game.Models.Match
         {
             if (settings.Valid())
             {
-                throw new ArgumentException("Got invalid settings");
+                throw new DomainException("Got invalid settings");
             }
 
             MatchState = MatchState.Running;
@@ -59,6 +59,10 @@ namespace Server.Game.Models.Match
             => (Round + Settings.ShowVillianEvery - Settings.ShowVillianAfter)
                     % Settings.ShowVillianEvery == 0;
 
+        public int VillianRevealedIn()
+            => (Round + Settings.ShowVillianEvery - Settings.ShowVillianAfter)
+                    & Settings.ShowVillianEvery;
+
         public List<Player> players { get; private set; }
         public IReadOnlyCollection<Player> Players => players;
 
@@ -72,7 +76,7 @@ namespace Server.Game.Models.Match
         {
             if (MatchState != MatchState.Running)
             {
-                throw new Exception("Invalid state");
+                throw new DomainException("Invalid state");
             }
 
             CurrentPlayer.MakeTurn(

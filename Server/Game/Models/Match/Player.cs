@@ -85,24 +85,24 @@ namespace Server.Game.Models.Match
         {
             if (!HasAnyTicket(ticket))
             {
-                throw new ArgumentException($"Ticket '{ticket.ToString()}' not available anymore");
+                throw new DomainException($"Ticket '{ticket.ToString()}' not available anymore");
             }
 
             if (useDoubleTicket && Tickets.Double == 0)
             {
-                throw new ArgumentException("Double ticket not available");
+                throw new DomainException("Double ticket not available");
             }
 
             Route route = RouteWith(targetPosition, ticket);
 
             if (route == null)
             {
-                throw new ArgumentException("Invalid target position");
+                throw new DomainException("Invalid target position");
             }
 
             if (!IsValidRoute(route))
             {
-                throw new ArgumentException("Invalid route selected");
+                throw new DomainException("Invalid route selected");
             }
 
             Tickets.RemoveTicket(ticket);
