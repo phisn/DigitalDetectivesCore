@@ -46,15 +46,15 @@ namespace Server.Game.Models.Match
 
         public float VillianBlackTicketMulti { get; set; }
 
-        public bool Valid =>
+        public bool Valid() =>
             (PlayerCount >= 3 || PlayerCount <= 6) &&
             (Rounds > 0) &&
             (ShowVillianAfter >= 0) &&
             (ShowVillianEvery >= 0) &&
             // villianblackticketmulti can be negative
             (VillianTickets.Black + VillianBlackTicketMulti * (PlayerCount - 1) >= 0) &&
-            (VillianTickets.Valid) &&
-            (DetectiveTickets.Valid);
+            (VillianTickets.Valid()) &&
+            (DetectiveTickets.Valid());
 
         public override bool Equals(object obj)
         {

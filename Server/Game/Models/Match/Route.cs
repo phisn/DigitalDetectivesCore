@@ -28,7 +28,7 @@ namespace Server.Game.Models.Match
             To = Station.At(to);
         }
 
-        public Route Inverted 
+        public Route Inverted()
             => new Route(Type, To.Position, From.Position);
 
         public override bool Equals(object obj)
@@ -42,7 +42,7 @@ namespace Server.Game.Models.Match
         private static ILookup<long, Route> routes = new List<Route>
         {
         }
-            .SelectMany(r => new Route[] { r, r.Inverted })
+            .SelectMany(r => new Route[] { r, r.Inverted() })
             .Distinct()
             .ToLookup(r => r.From.Position);
     }

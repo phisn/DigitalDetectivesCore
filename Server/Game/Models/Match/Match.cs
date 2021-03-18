@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Server.Game.Models.Match
 {
+    /*
+     * Move from properties to functions
+     */
     public class Match : Entity
     {
         public Match(MatchSettings settings)
         {
-            if (settings.Valid)
+            if (settings.Valid())
             {
                 throw new ArgumentException("Got invalid settings");
             }
@@ -81,7 +84,7 @@ namespace Server.Game.Models.Match
             {
                 Villian.Tickets.AddTicket(ticket);
 
-                if (CurrentPlayer.Station == Villian.Station)
+                if (CurrentPlayer.Position() == Villian.Position())
                 {
                     MatchState = MatchState.DetectivesWon;
                     AddGameEvent(new MatchOverGameEvent(this));
@@ -90,14 +93,14 @@ namespace Server.Game.Models.Match
             else
             {
                 // it should not be possible to move onto a detective
-                Debug.Assert(!Detectives.Any(p => p.Station == CurrentPlayer.Station));
+                Debug.Assert(!Detectives.Any(p => p.Position() == CurrentPlayer.Position()));
                 
                 ++Round;
                 AddGameEvent(new MatchRoundOverGameEvent());
 
                 if (IsVillianRevealRound)
                 {
-                    lastStationVillianReveal = Villian.Station.Position;
+                    lastStationVillianReveal = Villian.Position().Position;
                     AddGameEvent(new MatchVillianRevealedGameEvent());
                 }
 
@@ -123,7 +126,7 @@ namespace Server.Game.Models.Match
             }
 
             // ensure next player has any valid moves
-            if (CurrentPlayer.ValidRoutes.Count == 0)
+            if (CurrentPlayer.ValidRoutes().Count == 0)
             {
                 MatchState = CurrentPlayer.Role == PlayerRole.Detective
                     ? MatchState.VillianWon
@@ -131,7 +134,7 @@ namespace Server.Game.Models.Match
                 AddGameEvent(new MatchOverGameEvent(this));
             }
 
-            AddGameEvent(new MatchTurnOverGameEvent());
+            AddGameEvent(new MatchTurnOverGameEvent(this));
         }
 
         public List<Player> Detectives

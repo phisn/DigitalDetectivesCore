@@ -73,7 +73,7 @@ namespace Server.Game.Models.Match
         public int Black { get; private set; }
         public int Double { get; private set; }
 
-        public bool Valid =>
+        public bool Valid() =>
             Yellow >= 0 &&
             Green >= 0 &&
             Red >= 0 &&

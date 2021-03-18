@@ -48,23 +48,23 @@ namespace Server.Game.Models.Match
         public TicketBag Tickets { get; private set; }
         public PlayerRole Role { get; private set; }
         public PlayerColor Color { get; private set; }
-        public Station Initial { get; set; }
+        public Station Initial { get; private set; }
 
         private List<Route> path { get; set; }
         public IReadOnlyCollection<Route> Path => path;
 
         public long MatchId { get; private set; }
-        public Match Match { get; set; }
+        public Match Match { get; private set; }
 
-        public Station Station =>
-            Station.At(path[path.Count - 1].To.Position);
+        public Station Position() =>
+            Models.Match.Station.At(path[^1].To.Position);
 
         public Route RouteWith(long target, TicketType type)
-            => Route.RoutesBetween(Station, Station.At(target))
+            => Route.RoutesBetween(Position(), Models.Match.Station.At(target))
                 .FirstOrDefault(r => r.Type == type);
 
-        public List<Route> ValidRoutes
-            => Route.RoutesFrom(Station)
+        public List<Route> ValidRoutes()
+            => Route.RoutesFrom(Position())
                 .Where(r => IsValidRoute(r))
                 .ToList();
 
@@ -118,7 +118,7 @@ namespace Server.Game.Models.Match
             => HasAnyTicket(route.Type) &&
             // neither detectives nor the villian should 
             // be able to walk on detectives
-                !Match.Detectives.Any(d => d.Station == route.To);
+                !Match.Detectives.Any(d => d.Position() == route.To);
 
         private Player(
             long initialPosition,

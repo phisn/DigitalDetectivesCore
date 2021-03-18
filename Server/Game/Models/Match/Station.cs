@@ -9,7 +9,7 @@ namespace Server.Game.Models.Match
     public class Station : ValueObject
     {
         public static Station At(long position)
-            => stations[position];
+            => new Station(TicketType.Red, position); // stations[position];
 
         public static Station RandomInitial
             => At(initial[new Random().Next(initial.Count)]);

@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,6 +37,9 @@ namespace Server.Game.SeedWork
             gameEvents.Add(domainEvent);
         }
         
+        [JsonIgnore]
+        [NotMapped]
+        [NonSerialized]
         private List<INotification> gameEvents;
     }
 }
