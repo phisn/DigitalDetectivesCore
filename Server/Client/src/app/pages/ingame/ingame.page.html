@@ -26,8 +26,10 @@
 			<ion-item *ngIf="getModel().tickets.yellow > 0">
 				<ion-label style="font-size: large; --background: yellow">Taxi</ion-label>
 				<ion-label slot="end">{{getModel().tickets.yellow}} remaining</ion-label>
-				<ion-select *ngIf="getRoutesFor(TicketType.Yellow).length > 0"
-					slot="end" value="yellow" interface="action-sheet" >
+				<ion-select [(ngModel)]="test" #yellowSelect
+					*ngIf="getRoutesFor(TicketType.Yellow).length > 0"
+					slot="end" value="yellow" interface="action-sheet"
+					(ionChange)="chooseRoute(TicketType.Yellow)">
 					<ion-select-option 
 						*ngFor="let route of getRoutesFor(TicketType.Yellow)"
 						value="{{route.position}}">{{route.position}}</ion-select-option>
@@ -36,8 +38,10 @@
 			<ion-item *ngIf="getModel().tickets.green > 0">
 				<ion-label style="font-size: large;">Bus</ion-label>
 				<ion-label slot="end">{{getModel().tickets.green}} remaining</ion-label>
-				<ion-select *ngIf="getRoutesFor(TicketType.Green).length > 0"
-					slot="end" value="green" interface="action-sheet" >
+				<ion-select #greenSelect
+					*ngIf="getRoutesFor(TicketType.Green).length > 0"
+					slot="end" value="green" interface="action-sheet"
+					(ionChange)="chooseRoute(TicketType.Green)">
 					<ion-select-option 
 						*ngFor="let route of getRoutesFor(TicketType.Green)"
 						value="{{route.position}}">{{route.position}}</ion-select-option>
@@ -46,8 +50,10 @@
 			<ion-item *ngIf="getModel().tickets.red > 0">
 				<ion-label style="font-size: large;">Underground</ion-label>
 				<ion-label slot="end">{{getModel().tickets.red}} remaining</ion-label>
-				<ion-select *ngIf="getRoutesFor(TicketType.Red).length > 0"
-					slot="end" value="red" interface="action-sheet" >
+				<ion-select #redSelect
+					*ngIf="getRoutesFor(TicketType.Red).length > 0"
+					slot="end" value="red" interface="action-sheet"
+					(ionChange)="chooseRoute(TicketType.Red)">
 					<ion-select-option 
 						*ngFor="let route of getRoutesFor(TicketType.Red)"
 						value="{{route.position}}">{{route.position}}</ion-select-option>
@@ -56,8 +62,10 @@
 			<ion-item *ngIf="getModel().tickets.black > 0">
 				<ion-label slot="start" style="font-size: large;">Black</ion-label>
 				<ion-label>{{getModel().tickets.black}} remaining</ion-label>
-				<ion-select *ngIf="getRoutesFor(TicketType.Black).length > 0"
-					slot="end" value="black" interface="action-sheet" >
+				<ion-select #blackSelect
+					*ngIf="getRoutesFor(TicketType.Black).length > 0"
+					slot="end" value="black" interface="action-sheet"
+					(ionChange)="chooseRoute(TicketType.Black)">
 					<ion-select-option 
 						*ngFor="let route of getRoutesFor(TicketType.Black)"
 						value="{{route.position}}">{{route.position}}</ion-select-option>

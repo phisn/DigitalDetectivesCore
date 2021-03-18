@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController, LoadingController, ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AlertController, IonSelect, LoadingController, ModalController } from '@ionic/angular';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { timer } from 'rxjs';
 import { ChoosableRoute } from 'src/app/models/bindings/choosable-route';
@@ -16,6 +16,13 @@ import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-in
 })
 export class IngamePage implements OnInit {
   TicketType = TicketType;
+
+  @ViewChild("yellowSelect") private yellowSelect: IonSelect;
+  @ViewChild("greenSelect") private greenSelect: IonSelect;
+  @ViewChild("redSelect") private redSelect: IonSelect;
+  @ViewChild("blackSelect") private blackSelect: IonSelect;
+
+  public test: any;
 
   constructor(
     private alertController: AlertController,
@@ -51,6 +58,15 @@ export class IngamePage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  public chooseRoute(ticket: TicketType) {
+    let selected = this.getSelectorFor(ticket);    
+
+    console.log(selected.value);
+
+    selected.selectedText = "";
+    selected.value = 0;
   }
 
   private ingameHub: HubConnection;
@@ -157,5 +173,14 @@ export class IngamePage implements OnInit {
   
   private onEventArrived() {
     this.loadingController.dismiss();
+  }
+
+  private getSelectorFor(type: TicketType): IonSelect {
+    switch (type) {
+      case TicketType.Yellow: return this.yellowSelect;
+      case TicketType.Green: return this.greenSelect;
+      case TicketType.Red: return this.redSelect;
+      case TicketType.Black: return this.blackSelect;
+    }
   }
 }
