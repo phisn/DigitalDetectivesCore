@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Services
 {
-    public interface IUserIngameService
+    public interface IIngameUserService
     {
         public Player Player { get; }
         public Match Match { get; }
