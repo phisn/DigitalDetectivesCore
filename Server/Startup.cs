@@ -42,8 +42,7 @@ namespace Server
             // application
             services
                 .AddSingleton<IIngameService, IngameService>()
-                .AddSingleton<IUserPlayerMappingService, UserPlayerMappingService>()
-                .AddScoped<IUserIngameService, UserIngameService>();
+                .AddScoped<IIngameUserService, IngameUserService>();
         }
 
         public void Configure(
