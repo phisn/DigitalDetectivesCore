@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Server.Application.Hubs.Models;
 using Server.Application.Services;
 using Server.Game.Models.Match;
+using Server.Game.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,90 +16,62 @@ namespace Server.Application.Hubs
         public IngameHub(
             ILogger<IngameHub> logger,
             IIdentityService identityService,
-            UserIngameService userIngameService)
+            IngameUserService userIngameService)
         {
             this.logger = logger;
             this.identityService = identityService;
             this.userIngameService = userIngameService;
         }
 
-        public void MakeTurn(TicketType ticket, long position)
+        public async Task MakeTurn(long position, TicketType ticket, bool useDoubleTicket)
         {
+            try
+            {
+                userIngameService.MakeTurn(position, ticket, useDoubleTicket);
+            }
+            catch (DomainException e)
+            {
+                logger.LogError($"MakeTurn failed with domainexception ({e.Message}) ({e.StackTrace})");
+                await Clients.Caller.ErrorEvent("DomainException");
+                await Clients.Caller.UpdateStateByPlayer(userIngameService.Player);
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"MakeTurn failed with exception ({e.Message}) ({e.StackTrace})");
+                await Clients.Caller.ErrorEvent("Exception");
+                await Clients.Caller.UpdateStateByPlayer(userIngameService.Player);
+            }
         }
 
-        public override Task OnConnectedAsync()
+        public async override Task OnConnectedAsync()
         {
             if (!userIngameService.Registered)
             {
+                logger.LogWarning($"Unregistered user tried to connect ({identityService.User.ToString()})");
+
+                // use filter in future
                 Context.Abort();
             }
 
-            if (userIngameService.Player.Id == userIngameService.Match.CurrentPlayerId)
-            {
-                SendCurrentPlayerTurnEvent();
-            }
-            else
-            {
-                // send not current player turn
-            }
+            await base.OnConnectedAsync();
 
-            return base.OnConnectedAsync();
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,
+                identityService.User.ToString());
+
+            await Clients.Caller.UpdateStateByPlayer(userIngameService.Player);
+
+            logger.LogDebug($"User connected ({identityService.User.ToString()} | {userIngameService.Player.Color.ToString()})");
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            logger.LogInformation($"disconnected: {identityService.User.ToString()}");
+            logger.LogDebug($"User disconnected ({identityService.User.ToString()} | {(userIngameService.Registered ? userIngameService.Player.Color.ToString() : "unregistered")})");
             return base.OnDisconnectedAsync(exception);
         }
 
         private ILogger<IngameHub> logger;
         private IIdentityService identityService;
-        private UserIngameService userIngameService;
-        
-        private void SendCurrentPlayerTurnEvent()
-        {
-            if (userIngameService.Player.Role == PlayerRole.Detective)
-            {
-                TurnDetectiveEvent turnEvent = new TurnDetectiveEvent
-                {
-                    Position = userIngameService.Player.Position().Position,
-                    Routes = userIngameService.Player.ValidRoutes()
-                        .Select(r => new ChoosableRoute
-                        {
-                            Position = r.To.Position,
-                            Type = r.Type
-                        })
-                        .ToList(),
-                    Tickets = userIngameService.Player.Tickets,
-                    VillianRevealedIn = userIngameService.Match.VillianRevealedIn(),
-                    VillianTickets = userIngameService.Match.Villian.Tickets
-                };
-                Clients.Caller.OnTurnDetective(turnEvent);
-            }
-            else
-            {
-                TurnVillianEvent turnEvent = new TurnVillianEvent
-                {
-                    Position = userIngameService.Player.Position().Position,
-                    Routes = userIngameService.Player.ValidRoutes()
-                        .Select(r => new ChoosableRoute
-                        {
-                            Position = r.To.Position,
-                            Type = r.Type
-                        })
-                        .ToList(),
-                    Tickets = userIngameService.Player.Tickets,
-                    VillianRevealedIn = userIngameService.Match.VillianRevealedIn(),
-                    DetectiveTickets = userIngameService.Match.Detectives
-                        .Select(p => new TicketBagForPlayer
-                        {
-                            Color = p.Color,
-                            Tickets = p.Tickets
-                        })
-                        .ToList()
-                };
-                Clients.Caller.OnTurnVillian(turnEvent);
-            }
-        }
+        private IngameUserService userIngameService;
     }
 }
