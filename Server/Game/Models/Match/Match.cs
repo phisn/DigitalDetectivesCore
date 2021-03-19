@@ -138,7 +138,7 @@ namespace Server.Game.Models.Match
                 AddGameEvent(new MatchOverGameEvent(this));
             }
 
-            AddGameEvent(new MatchTurnOverGameEvent(this));
+            AddGameEvent(new MatchTurnGameEvent(this));
         }
 
         public List<Player> Detectives

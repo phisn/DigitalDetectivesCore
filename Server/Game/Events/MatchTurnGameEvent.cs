@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Server.Game.Events
 {
-    public class MatchTurnOverGameEvent : INotification
+    public class MatchTurnGameEvent : INotification
     {
         public Match Match { get; set; }
 
-        public MatchTurnOverGameEvent(Match match)
+        public MatchTurnGameEvent(Match match)
         {
             Match = match;
         }

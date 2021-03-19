@@ -68,6 +68,9 @@ namespace Server.Game.Models.Match
                 .Where(r => IsValidRoute(r))
                 .ToList();
 
+        public bool IsCurrentPlayer()
+            => Id == Match.CurrentPlayer.Id;
+
         public bool HasAnyTicket(TicketType type)
             => type switch
             {
