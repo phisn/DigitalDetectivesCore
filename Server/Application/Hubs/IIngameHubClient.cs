@@ -8,7 +8,9 @@ namespace Server.Application.Hubs
 {
     public interface IIngameHubClient
     {
-        Task OnTurnDetective(TurnDetectiveEvent turnEvent);
-        Task OnTurnVillian(TurnVillianEvent turnEvent);
+        Task ErrorEvent(string error);
+
+        Task UpdateStateDetective(DetectiveState state);
+        Task UpdateStateVillian(VillianState state);
     }
 }

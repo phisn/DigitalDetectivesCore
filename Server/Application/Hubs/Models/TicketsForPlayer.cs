@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class TicketBagForPlayer
+    public class TicketsForPlayer
     {
         public TicketBag Tickets;
         public PlayerColor Color;

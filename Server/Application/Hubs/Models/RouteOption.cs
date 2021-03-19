@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class ChoosableRoute
+    public class RouteOption
     {
         public long Position { get; set; }
         public TicketType Type { get; set; }
