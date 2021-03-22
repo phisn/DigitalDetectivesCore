@@ -24,6 +24,11 @@ namespace Server.Application.Services
             userPlayerMapping.Clear();
         }
 
+        public List<PlayerColor> ColorsUnregistered => Match.Players
+            .Where(p => !userPlayerMapping.Any(u => u.player.Id == p.Id))
+            .Select(p => p.Color)
+            .ToList();
+
         public Player RegisterUser(Guid userID, PlayerColor color)
         {
             Player player = Match.Players.First(p => p.Color == color);
@@ -49,7 +54,8 @@ namespace Server.Application.Services
             return selected;
         }
 
-        IEnumerable<(Guid userID, Player player)> Registered => userPlayerMapping;
+        public IEnumerable<(Guid userID, Player player)> 
+            Registered => userPlayerMapping;
 
         public void UnregisterUser(Guid userID)
         {

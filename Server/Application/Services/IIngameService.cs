@@ -13,6 +13,8 @@ namespace Server.Application.Services
         public void StartMatch(Match match);
         public void CancelMatch();
 
+        public List<PlayerColor> ColorsUnregistered { get; }
+
         public Player RegisterUser(Guid userID, PlayerColor color);
         public Player RegisterUser(Guid userID);
         public void UnregisterUser(Guid userID);
