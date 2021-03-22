@@ -8,8 +8,6 @@ namespace Server.Application.Hubs
 {
     public interface IIngameHubClient
     {
-        Task ErrorEvent(string error);
-
         Task UpdateStateDetective(DetectiveState state);
         Task UpdateStateVillian(VillianState state);
     }
