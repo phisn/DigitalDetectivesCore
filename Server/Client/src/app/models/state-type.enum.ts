@@ -1,4 +1,4 @@
-export enum TurnType {
+export enum StateType {
   Detective,
   Villian
 }
