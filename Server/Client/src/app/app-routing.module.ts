@@ -3,11 +3,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'ingame',
-    pathMatch: 'full'
-  },
-  {
     path: 'ingame',
     loadChildren: () => import('./pages/ingame/ingame.module').then( m => m.IngamePageModule)
   }

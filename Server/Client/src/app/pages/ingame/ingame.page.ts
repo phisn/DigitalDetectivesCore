@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AlertController, IonSelect, LoadingController, ModalController } from '@ionic/angular';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { timer } from 'rxjs';
-import { ChoosableRoute } from 'src/app/models/bindings/choosable-route';
-import { TurnDetectiveEvent } from 'src/app/models/bindings/turn-detective-event';
-import { TurnVillianEvent } from 'src/app/models/bindings/turn-villian-event';
-import { TicketType } from 'src/app/models/ticket-type.enum';
-import { TurnType } from 'src/app/models/turn-type.enum';
+import { Component, OnInit } from '@angular/core';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { TicketType } from 'src/app/models/game/ticket-type.enum';
 import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-info.component';
+import { StateType } from 'src/app/models/state-type.enum';
+import { IngameState } from 'src/app/models/ingame-state';
+import { IngameHubService } from 'src/app/services/ingame-hub/ingame-hub.service';
+import { RouteOption } from 'src/app/models/route-option';
+import { IngameRegistrationComponent } from './ingame-registration/ingame-registration.component';
 
 @Component({
   selector: 'app-ingame',
@@ -15,97 +15,44 @@ import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-in
   styleUrls: ['./ingame.page.scss'],
 })
 export class IngamePage implements OnInit {
-  TicketType = TicketType;
-
-  @ViewChild("yellowSelect") private yellowSelect: IonSelect;
-  @ViewChild("greenSelect") private greenSelect: IonSelect;
-  @ViewChild("redSelect") private redSelect: IonSelect;
-  @ViewChild("blackSelect") private blackSelect: IonSelect;
-
-  public test: any;
-
+  StateType = StateType;
+  public model: IngameState;
+  
   constructor(
+    private ingameHubService: IngameHubService,
     private alertController: AlertController,
     private loadingController: LoadingController,
     private modalController: ModalController) {
   }
-
-  public getModel() {
-    return this.model;
-  }
-
-  public isDetective() {
-    return this.modelType == TurnType.Detective;
-  }
-  
-  public isVillian() {
-    return this.modelType == TurnType.Villian;
-  }
-
-  public getRoutesFor(type: TicketType): ChoosableRoute[] {
-    return this.model.routes.filter(value => {
-      return value.type == type;
-    });
-  }
-
-  public async showTicketsModal() {
-    const modal = await this.modalController.create({
-      component: PlayerTicketInfoComponent,
-      componentProps: {
-        "model": this.model,
-        "modelType": this.modelType
-      }
-    });
-
-    await modal.present();
-  }
-
-  public chooseRoute(ticket: TicketType) {
-    let selected = this.getSelectorFor(ticket);    
-
-    console.log(selected.value);
-
-    selected.selectedText = "";
-    selected.value = 0;
-  }
-
-  private ingameHub: HubConnection;
-  private model: TurnDetectiveEvent | TurnVillianEvent;
-  private modelType: TurnType;
   
   async ngOnInit() {
-    try {
-      let loader = await this.loadingController.create({
-        message: "Connecting to server ..."
-      });
+    let loader = await this.loadingController.create({
+      message: "Connecting to server ..."
+    });
 
-      await loader.present();
+    await loader.present();
+    
+    this.ingameHubService.onclose.subscribe(async error => {
+      console.error(error);
 
-      this.ingameHub = new HubConnectionBuilder()
-        .withUrl("/ingamehub")
-        .build();
-      
-      this.ingameHub.on("OnTurnDetective", model => {
-        this.model = model;
-        this.modelType = TurnType.Detective;
+      if (await this.modalController.getTop() != null) {
+        await this.modalController.dismiss();
+      }
 
-        this.onEventArrived();
-      });
+      this.model = null;
 
-      this.ingameHub.onclose(error => {
-        console.error(error);
-        this.model = null;
-        this.HandleConnectionFailure(
-          "Lost connection to server",
-          "Do you want to reconnect?",
-          "Reconnect");
-      })
+      await this.HandleConnectionFailure(
+        "Lost connection to server",
+        "Do you want to reconnect?",
+        "Reconnect");
+    });
 
-      await this.Connect();
-    }
-    catch (error) {
-      console.log(error);
-    }
+    this.ingameHubService.state.subscribe(state => {
+      console.log("Stateupdate: t" + state.type);
+      this.model = state;
+    })
+    
+    await this.Connect();
   }
 
   private async Connect() {
@@ -113,21 +60,17 @@ export class IngamePage implements OnInit {
     this.model = null;
 
     try {
-      await this.ingameHub.start();
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await this.ingameHubService.connect();
 
-      // model should be initialized by event 
-      // on connected
-      if (this.model == null) {
-        await this.ingameHub.stop();
-        await this.HandleConnectionFailure(
-          "No response from server",
-          "Do you want to retry?",
-          "Retry");
-      }
+      let modal = await this.modalController.create({
+        component: IngameRegistrationComponent
+      });
+
+      await modal.present();
     }
     catch (error) {
       console.error(error);
+      
       await this.HandleConnectionFailure(
         "Failed to connect",
         "Do you want to retry?",
@@ -139,6 +82,7 @@ export class IngamePage implements OnInit {
     header: string,
     message: string,
     option: string) {
+    
     const alert = await this.alertController.create({
       header: header,
       message: message,
@@ -153,34 +97,14 @@ export class IngamePage implements OnInit {
             await loader.present();
             this.Connect();
           }
-        }, {
-          text: "Exit",
-          role: "cancel",
-          handler: () => {
-
-          }
         }
       ]
     });
 
-    
     if (await this.loadingController.getTop() != null) {
       await this.loadingController.dismiss();
     }
 
     alert.present();
-  }
-  
-  private onEventArrived() {
-    this.loadingController.dismiss();
-  }
-
-  private getSelectorFor(type: TicketType): IonSelect {
-    switch (type) {
-      case TicketType.Yellow: return this.yellowSelect;
-      case TicketType.Green: return this.greenSelect;
-      case TicketType.Red: return this.redSelect;
-      case TicketType.Black: return this.blackSelect;
-    }
   }
 }

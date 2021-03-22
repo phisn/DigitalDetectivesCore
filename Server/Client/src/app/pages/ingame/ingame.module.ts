@@ -8,6 +8,9 @@ import { IngamePageRoutingModule } from './ingame-routing.module';
 
 import { IngamePage } from './ingame.page';
 import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-info.component';
+import { IngamePlayerComponent } from './ingame-player/ingame-player.component';
+import { IngameSpectatorComponent } from './ingame-spectator/ingame-spectator.component';
+import { IngameRegistrationComponent } from './ingame-registration/ingame-registration.component';
 
 @NgModule({
   imports: [
@@ -18,7 +21,11 @@ import { PlayerTicketInfoComponent } from './player-ticket-info/player-ticket-in
   ],
   declarations: [
     IngamePage,
-    PlayerTicketInfoComponent
+    IngamePlayerComponent,
+    IngameRegistrationComponent,
+    IngameSpectatorComponent,
+    PlayerTicketInfoComponent,
   ]
 })
-export class IngamePageModule {}
+export class IngamePageModule {
+}

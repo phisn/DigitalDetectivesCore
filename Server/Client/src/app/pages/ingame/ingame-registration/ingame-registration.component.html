@@ -1,0 +1,28 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>Digital Detectives</ion-title>
+	</ion-toolbar>
+</ion-header>
+<ion-content>
+	<ion-list>
+		<ion-list-header>Info</ion-list-header>
+		<ion-item>
+			<ion-label>Players:</ion-label>
+			<!--Amount of connected players are all possible players without the missing ones-->
+			<ion-label slot="end">{{matchInfo.settings.playerCount - matchInfo.availableColors.length}}/{{matchInfo.settings.playerCount}}</ion-label>
+		</ion-item>
+	</ion-list>
+	<ion-list>
+		<ion-list-header>Join</ion-list-header>
+		<ion-item button (click)="registerAsPlayer(color)" 
+			*ngFor="let color of matchInfo.availableColors">
+			<ion-icon name="arrow-forward-outline"></ion-icon>
+			<ion-label style="padding-left: 10pt;">{{color}}</ion-label>
+		</ion-item>
+		<ng-container *ngIf="matchInfo.availableColors.length == 0">
+			<ion-item>
+				Currently no colors available
+			</ion-item>
+		</ng-container>
+	</ion-list>
+</ion-content>

@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { TurnDetectiveEvent } from 'src/app/models/bindings/turn-detective-event';
-import { TurnVillianEvent } from 'src/app/models/bindings/turn-villian-event';
-import { TurnType } from 'src/app/models/turn-type.enum';
+import { DetectiveState } from 'src/app/models/detective-state';
+import { IngameState } from 'src/app/models/ingame-state';
+import { StateType } from 'src/app/models/state-type.enum';
+import { VillianState } from 'src/app/models/villian-state';
 
 @Component({
   selector: 'app-player-ticket-info',
@@ -10,29 +11,28 @@ import { TurnType } from 'src/app/models/turn-type.enum';
   styleUrls: ['./player-ticket-info.component.scss'],
 })
 export class PlayerTicketInfoComponent implements OnInit {
-  @Input() public model: TurnDetectiveEvent | TurnVillianEvent;
-  @Input() public modelType: TurnType;
+  @Input() public model: IngameState;
 
   public closeModal() {
     this.modalController.dismiss();
   }
 
   public isDetective(): boolean {
-    return this.modelType == TurnType.Detective;
+    return this.model.type == StateType.Detective;
   }
 
   public isVillian(): boolean {
-    return this.modelType == TurnType.Villian;
+    return this.model.type == StateType.Villian;
   }
 
-  public assertDetective(): TurnDetectiveEvent {
-    console.assert(this.modelType == TurnType.Detective);
-    return this.model as TurnDetectiveEvent;
+  public assertDetective(): DetectiveState {
+    console.assert(this.model.type == StateType.Detective);
+    return this.model.state as DetectiveState;
   }
 
-  public assertVillian(): TurnVillianEvent {
-    console.assert(this.modelType == TurnType.Villian);
-    return this.model as TurnVillianEvent;
+  public assertVillian(): VillianState {
+    console.assert(this.model.type == StateType.Villian);
+    return this.model.state as VillianState;
   }
 
   constructor(
