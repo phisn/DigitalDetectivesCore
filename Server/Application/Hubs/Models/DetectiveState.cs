@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class DetectiveState : PlayerInfo
+    public class DetectiveState : PlayerState
     {
         public TicketBag VillianTickets { get; set; }
 

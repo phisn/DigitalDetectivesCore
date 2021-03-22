@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class PlayerInfo
+    public class PlayerState
     {
         // empty if currently not at turn
         public List<RouteOption> Routes { get; set; }
@@ -15,7 +15,7 @@ namespace Server.Application.Hubs.Models
         public int VillianRevealedIn { get; set; }
         public TicketBag Tickets { get; set; }
 
-        public PlayerInfo(
+        public PlayerState(
             List<RouteOption> routes, 
             long position, 
             int villianRevealedIn, 

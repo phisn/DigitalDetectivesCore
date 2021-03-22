@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Application.Hubs.Models
 {
-    public class VillianState : PlayerInfo
+    public class VillianState : PlayerState
     {
         public List<TicketsForPlayer> DetectiveTickets { get; set; }
 
