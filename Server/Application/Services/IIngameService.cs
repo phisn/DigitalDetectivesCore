@@ -1,4 +1,5 @@
-﻿using Server.Game.Models.Match;
+﻿using Server.Application.Services.Models;
+using Server.Game.Models.Match;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,18 @@ namespace Server.Application.Services
 {
     public interface IIngameService
     {
-        public Match Match { get; }
+        public bool Started { get; }
+        public IReadOnlyList<UserPlayerBinding> UsersBindings { get; }
+        
+        public Task<Match> GetMatch();
+        public Task<List<PlayerColor>> GetColorsUnregistered();
+        
+        public Task StartMatch(Match match);
+        public Task StartMatch(long matchId);
+        public Task CancelMatch();
 
-        public void StartMatch(Match match);
-        public void CancelMatch();
-
-        public List<PlayerColor> ColorsUnregistered { get; }
-
-        public Player RegisterUser(Guid userID, PlayerColor color);
-        public Player RegisterUser(Guid userID);
-        public void UnregisterUser(Guid userID);
-
-        public IEnumerable<(Guid userID, Player player)> Registered { get; }
-
-        public Guid? UserFromPlayer(PlayerColor color);
-        public Player PlayerFromUser(Guid userID);
+        public Task<Player> RegisterUser(Guid userID, PlayerColor color);
+        public Task<Player> RegisterUser(Guid userID);
+        public Task UnregisterUser(Guid userID);
     }
 }

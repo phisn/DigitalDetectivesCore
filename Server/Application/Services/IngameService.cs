@@ -1,4 +1,9 @@
-﻿using Server.Game.Models.Match;
+﻿using Microsoft.AspNetCore.SignalR;
+using Server.Application.Hubs;
+using Server.Application.Hubs.Models;
+using Server.Application.Services.Models;
+using Server.Game.Models.Match;
+using Server.Game.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,75 +13,114 @@ namespace Server.Application.Services
 {
     public class IngameService : IIngameService
     {
-        public Match Match { get; private set; }
+        public bool Started { get; private set; }
 
-        public void StartMatch(Match match)
+        private List<UserPlayerBinding> users = new List<UserPlayerBinding>();
+        public IReadOnlyList<UserPlayerBinding> UsersBindings => users;
+
+        public IngameService(
+            IHubContext<IngameHub, IIngameHubClient> ingameHub,
+            IMatchRepository matchRepository)
         {
-            if (Match != null)
+            this.ingameHub = ingameHub;
+            this.matchRepository = matchRepository;
+        }
+
+        public async Task<Match> GetMatch()
+            => await matchRepository.Get(matchId);
+
+        public async Task UnregisterUser(Guid userId)
+        {
+            if (users.Any(u => u.UserId == userId))
+            {
+                var user = users.First(u => u.UserId == userId);
+                users.Remove(user);
+
+                await ingameHub.Clients.All.PlayerLeftEvent(user.Color);
+            }
+        }
+
+        public async Task<List<PlayerColor>> GetColorsUnregistered() =>
+            (await GetMatch()).Players
+                .Where(p => !users.Any(u => u.PlayerId == p.Id))
+                .Select(p => p.Color)
+                .ToList();
+
+        public async Task StartMatch(Match match)
+        {
+            if (Started)
                 throw new Exception("Match already running");
 
-            Match = match;
+            await matchRepository.Add(match);
+            matchId = match.Id;
+
+            await ingameHub.Clients.All.MatchStartedEvent(new MatchInfo
+            {
+                AvailableColors = await GetColorsUnregistered(),
+                Round = match.Round,
+                Settings = match.Settings
+            });
         }
 
-        public void CancelMatch()
+        public async Task StartMatch(long matchId)
         {
-            Match = null;
-            userPlayerMapping.Clear();
+            if (Started)
+                throw new Exception("Match already running");
+
+            await StartMatch(await matchRepository.Get(matchId));
         }
 
-        public List<PlayerColor> ColorsUnregistered => Match.Players
-            .Where(p => !userPlayerMapping.Any(u => u.player.Id == p.Id))
-            .Select(p => p.Color)
-            .ToList();
-
-        public Player RegisterUser(Guid userID, PlayerColor color)
+        public async Task CancelMatch()
         {
-            Player player = Match.Players.First(p => p.Color == color);
+            Started = false;
+            users.Clear();
 
-            if (userPlayerMapping.Any(u => player.Id == u.player.Id))
+            await ingameHub.Clients.All.MatchCanceldEvent();
+        }
+
+        public async Task<Player> RegisterUser(Guid userId, PlayerColor color)
+        {
+            Player player = (await GetMatch()).Players.First(p => p.Color == color);
+
+            if (users.Any(u => player.Id == u.PlayerId))
                 throw new Exception("Color already occupied");
 
-            userPlayerMapping.Add((userID, player));
+            users.Add(new UserPlayerBinding
+            {
+                Color = player.Color,
+                PlayerId = player.Id,
+                UserId = userId
+            });
+
+            await ingameHub.Clients.All.PlayerJoinedEvent(color);
             return player;
         }
 
-        public Player RegisterUser(Guid userID)
+        public async Task<Player> RegisterUser(Guid userId)
         {
-            Player[] remaining = Match.Players
-                .Where(p => !userPlayerMapping.Any(u => u.player.Id == p.Id))
+            Player[] remaining = (await GetMatch()).Players
+                .Where(p => !users.Any(u => u.PlayerId == p.Id))
                 .ToArray();
 
             if (remaining.Length == 0)
                 throw new Exception("No color remaining");
 
             Player selected = remaining[new Random().Next(remaining.Length)];
-            userPlayerMapping.Add((userID, selected));
+            users.Add(new UserPlayerBinding
+            {
+                Color = selected.Color,
+                PlayerId = selected.Id,
+                UserId = userId
+            });
+
+            await ingameHub.Clients.All.PlayerJoinedEvent(selected.Color);
+
             return selected;
         }
 
-        public IEnumerable<(Guid userID, Player player)> 
-            Registered => userPlayerMapping;
+        private IHubContext<IngameHub, IIngameHubClient> ingameHub;
+        private IMatchRepository matchRepository;
 
-        public void UnregisterUser(Guid userID)
-        {
-            if (userPlayerMapping.Any(u => u.userID == userID))
-                userPlayerMapping.Remove(
-                    userPlayerMapping.First(u => u.userID == userID));
-        }
-
-        public Guid? UserFromPlayer(PlayerColor color)
-            => userPlayerMapping
-                .Where(u => u.player.Color == color)
-                .Select(u => (Guid?) u.userID)
-                .FirstOrDefault();
-
-        public Player PlayerFromUser(Guid userID)
-            => userPlayerMapping
-                .Where(u => u.userID == userID)
-                .Select(u => u.player)
-                .FirstOrDefault();
-
-        private List<(Guid userID, Player player)> userPlayerMapping
-            = new List<(Guid userID, Player player)>();
+        private long matchId;
     }
 }
