@@ -1,4 +1,5 @@
-﻿using Server.Game.Models.Match;
+﻿using Server.Application.Services.Models;
+using Server.Game.Models.Match;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,11 @@ namespace Server.Application.Services
 {
     public interface IIngameUserService
     {
-        public Player Player { get; }
-        public Match Match { get; }
         public bool Registered { get; }
+        public UserPlayerBinding Binding { get; }
 
-        public void MakeTurn(
+        public Task<Player> GetPlayer();
+        public Task MakeTurn(
             long targetPosition,
             TicketType ticket,
             bool useDoubleTicket);
