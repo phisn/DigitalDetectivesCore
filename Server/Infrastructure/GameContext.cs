@@ -7,5 +7,6 @@ namespace Server.Infrastructure
 {
     public class GameContext
     {
+
     }
 }

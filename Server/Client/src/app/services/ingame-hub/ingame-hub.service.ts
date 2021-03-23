@@ -43,6 +43,16 @@ export class IngameHubService {
       ));
     });
 
+    this.hubConnection.on("MatchStartedEvent", (match: MatchInfo) => {
+      this.matchInfo.next(match);
+    });
+
+    this.hubConnection.on("NewRoundEvent", () => {
+      let matchInfo = this.matchInfo.value;
+      matchInfo.round += 1;
+      this.matchInfo.next(matchInfo);
+    });
+
     this.hubConnection.on("PlayerLeftEvent", (color: PlayerColor) => {
       let matchInfo = this.matchInfo.value;
       matchInfo.availableColors = matchInfo.availableColors.concat([color]);
@@ -52,12 +62,6 @@ export class IngameHubService {
     this.hubConnection.on("PlayerJoinedEvent", (color: PlayerColor) => {
       let matchInfo = this.matchInfo.value;
       matchInfo.availableColors = matchInfo.availableColors.filter(c => c != color);
-      this.matchInfo.next(matchInfo);
-    });
-
-    this.hubConnection.on("NewRoundEvent", () => {
-      let matchInfo = this.matchInfo.value;
-      matchInfo.round += 1;
       this.matchInfo.next(matchInfo);
     });
   }
