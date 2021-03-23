@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server.Infrastructure.Repositories
 {
-    public class MatchRepository : IMatchRepository
+    public class TestMatchRepository : IMatchRepository
     {
         public Task Add(Match match)
         {
@@ -16,27 +16,24 @@ namespace Server.Infrastructure.Repositories
 
         public Task<Match> Get(long matchId)
         {
-            // assuming the same match will often be 
-            // accessed repeatedly
-            if (matchCache != null && matchCache.Id == matchId)
+            if (matchId != match.Id)
             {
-                return Task.FromResult(matchCache);
+                throw new ArgumentException("Match not found");
             }
 
-
-            throw new NotImplementedException();
+            return Task.FromResult(match);
         }
 
         public Task<Match> LastMatch()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(match);
         }
 
         public Task Save()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        private Match matchCache;
+        private Match match;
     }
 }
