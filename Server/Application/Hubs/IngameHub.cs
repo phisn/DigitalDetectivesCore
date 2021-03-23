@@ -25,44 +25,48 @@ namespace Server.Application.Hubs
             this.ingameUserService = ingameUserService;
         }
 
-        public Task<MatchInfo> GetMatchInfo()
+        public async Task<MatchInfo> GetMatchInfo()
         {
-            return Task.FromResult(new MatchInfo
+            Match match = await ingameService.GetMatch();
+
+            return new MatchInfo
             {
-                AvailableColors = ingameService.ColorsUnregistered,
-                Round = ingameService.Match.Round,
-                Settings = ingameService.Match.Settings
-            });
+                AvailableColors = await ingameService.GetColorsUnregistered(),
+                Round = match.Round,
+                Settings = match.Settings
+            };
         }
 
         public async Task RegisterAsPlayer(PlayerColor? color)
         {
             if (ingameUserService.Registered)
             {
-                if (color == null || ingameUserService.Player.Color == color.Value)
+                Player player = await ingameUserService.GetPlayer();
+
+                if (color == null || player.Color == color.Value)
                 {
                     return;
                 }
 
-                ingameService.UnregisterUser(identityService.User);
+                await ingameService.UnregisterUser(identityService.User);
             }
 
             try
             {
                 if (color.HasValue)
                 {
-                    ingameService.RegisterUser(
+                    await ingameService.RegisterUser(
                         identityService.User,
                         color.Value);
                 }
                 else
                 {
-                    ingameService.RegisterUser(
+                    await ingameService.RegisterUser(
                         identityService.User);
                 }
 
                 await Clients.Caller.UpdateStateByPlayer(
-                    ingameUserService.Player);
+                    await ingameUserService.GetPlayer());
             }
             catch (Exception e)
             {
@@ -75,7 +79,7 @@ namespace Server.Application.Hubs
         {
             try
             {
-                ingameUserService.MakeTurn(position, ticket, useDoubleTicket);
+                await ingameUserService.MakeTurn(position, ticket, useDoubleTicket);
             }
             catch (DomainException e)
             {
@@ -99,7 +103,7 @@ namespace Server.Application.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            logger.LogDebug($"User disconnected ({identityService.User.ToString()} | {(ingameUserService.Registered ? ingameUserService.Player.Color.ToString() : "unregistered")})");
+            logger.LogDebug($"User disconnected ({identityService.User} | {(ingameUserService.Registered ? ingameUserService.Binding.Color : "unregistered")})");
             ingameService.UnregisterUser(identityService.User);
             return base.OnDisconnectedAsync(exception);
         }
