@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Server.Application.Hubs;
 using Server.Application.Services;
+using Server.Application.Services.Models;
 using Server.Game.Events;
 using Server.Game.Models.Match;
 using System;
@@ -24,9 +25,12 @@ namespace Server.Application.DomainEventHandlers
 
         public async Task Handle(MatchTurnGameEvent notification, CancellationToken cancellationToken)
         {
-            foreach ((Guid userID, Player player) in ingameService.Registered)
+            Match match = await ingameService.GetMatch();
+
+            foreach (UserPlayerBinding userBinding in ingameService.UsersBindings)
             {
-                await ingameHub.Clients.Group(userID.ToString()).UpdateStateByPlayer(player);
+                await ingameHub.Clients.Group(userBinding.UserId.ToString()).UpdateStateByPlayer(
+                    match.Players.First(p => p.Id == userBinding.PlayerId));
             }
         }
 
