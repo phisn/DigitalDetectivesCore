@@ -1,4 +1,5 @@
 ﻿using Server.Application.Hubs.Models;
+using Server.Game.Models.Match;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,11 @@ namespace Server.Application.Hubs
     {
         Task UpdateStateDetective(DetectiveState state);
         Task UpdateStateVillian(VillianState state);
+
+        Task MatchStartedEvent(MatchInfo info);
+        Task MatchCanceldEvent();
+        Task NewRoundEvent();
+        Task PlayerLeftEvent(PlayerColor color);
+        Task PlayerJoinedEvent(PlayerColor color);
     }
 }
