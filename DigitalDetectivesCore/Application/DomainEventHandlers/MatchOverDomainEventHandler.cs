@@ -13,16 +13,13 @@ namespace DigitalDetectivesCore.Application.DomainEventHandlers
     public class MatchOverDomainEventHandler
         : INotificationHandler<MatchOverGameEvent>
     {
-        public MatchOverDomainEventHandler(
-            IngameHub gameHub)
+        public MatchOverDomainEventHandler()
         {
-            this.gameHub = gameHub;
         }
 
         public async Task Handle(MatchOverGameEvent notification, CancellationToken cancellationToken)
         {
         }
 
-        private IngameHub gameHub;
     }
 }
