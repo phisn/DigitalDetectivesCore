@@ -54,21 +54,22 @@ export class IngamePage implements OnInit {
       this.model = state;
     });
     
-    await this.Connect();
+    await this.connect();
   }
 
-  private async Connect() {
+  private async connect() {
     // ensure that model was null
     this.model = null;
 
     try {
       await this.ingameHubService.connect();
 
-      this.loadingController.dismiss();
       let modal = await this.modalController.create({
-        component: IngameRegistrationComponent
+        component: IngameRegistrationComponent,
+        backdropDismiss: false
       });
 
+      this.loadingController.dismiss();
       await modal.present();
     }
     catch (error) {
@@ -98,7 +99,7 @@ export class IngamePage implements OnInit {
             });
       
             await loader.present();
-            this.Connect();
+            this.connect();
           }
         }
       ]

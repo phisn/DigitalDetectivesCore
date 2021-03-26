@@ -71,7 +71,7 @@
 						value="{{route.position}}">{{route.position}}</ion-select-option>
 				</ion-select>
 			</ion-item>
-			<ion-item *ngIf="getModel().state.tickets.double == 0">
+			<ion-item *ngIf="getModel().state.tickets.double > 0">
 				<ion-label slot="start" style="font-size: large;">Double</ion-label>
 				<ion-label>{{getModel().state.tickets.double}} remaining</ion-label>
 				<ion-toggle slot="end"></ion-toggle>

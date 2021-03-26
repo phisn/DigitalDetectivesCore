@@ -31,14 +31,14 @@ export class IngameHubService {
 
     this.hubConnection.on("UpdateStateVillian", (state: VillianState) => {
       this.state.next(new IngameState(
-        StateType.Detective,
+        StateType.Villian,
         state
       ));
     });
 
     this.hubConnection.on("UpdateStateDetective", (state: DetectiveState) => {
       this.state.next(new IngameState(
-        StateType.Villian,
+        StateType.Detective,
         state
       ));
     });

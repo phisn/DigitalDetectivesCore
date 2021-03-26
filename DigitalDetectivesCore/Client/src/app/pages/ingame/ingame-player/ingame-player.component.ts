@@ -32,8 +32,6 @@ export class IngamePlayerComponent implements OnInit {
 
   ngOnInit() {
     this.ingameHubService.state.subscribe(state => {
-      console.log("STATE");
-      console.log(state);
       this.model = state;
     });
   }
@@ -52,8 +50,11 @@ export class IngamePlayerComponent implements OnInit {
 
   public async chooseRoute(ticket: TicketType) {
     let selected = this.getSelectorFor(ticket);
-
     let position = selected.value;
+
+    if (position == 0) {
+      return;
+    }
 
     selected.selectedText = "";
     selected.value = 0;
@@ -63,11 +64,14 @@ export class IngamePlayerComponent implements OnInit {
     });
 
     await loader.present();
-    
+    console.log("LOADING" + Math.random());
     try {
       await this.ingameHubService.makeTurn(position, ticket, false);
+      await this.loadingController.dismiss();
     }
     catch (error) {
+      console.log(error);
+
       let alert = await this.alertController.create({
         message: "Failed to make turn",
         buttons: [
