@@ -26,8 +26,8 @@ namespace DigitalDetectivesCore
             // infrastructure
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                     .AddScoped<IIdentityService, IdentityService>()
-                    .AddScoped<IMatchRepository, TestMatchRepository>();
-            //      .AddMediatR(typeof(Startup));
+                    .AddScoped<IMatchRepository, TestMatchRepository>()
+                    .AddMediatR(typeof(Startup));
 
             services.AddSpaStaticFiles(config =>
             {
