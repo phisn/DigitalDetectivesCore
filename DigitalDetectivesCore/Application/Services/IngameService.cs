@@ -57,7 +57,7 @@ namespace DigitalDetectivesCore.Application.Services
 
             Match match = await GetMatch();
 
-            if (match.CurrentPlayerId == Binding.PlayerId)
+            if (match.CurrentPlayerId != Binding.PlayerId)
             {
                 throw new Exception("Player is currently not at turn");
             }
