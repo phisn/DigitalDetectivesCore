@@ -25,7 +25,9 @@ namespace DigitalDetectivesCore.Game.SeedWork
             => gameEvents;
 
         public static bool operator ==(Entity left, Entity right)
-            => left.Equals(right);
+            => ReferenceEquals(left, null) || ReferenceEquals(right, null)
+                ? ReferenceEquals(left, right)
+                : left.Equals(right);
         public static bool operator !=(Entity left, Entity right)
             => !(left == right);
 
