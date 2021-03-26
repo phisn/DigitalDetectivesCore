@@ -1,5 +1,6 @@
 ﻿using DigitalDetectivesCore.Game.Models.Match;
 using DigitalDetectivesCore.Game.Repositories;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DigitalDetectivesCore.Infrastructure.Repositories
 {
     public class TestMatchRepository : IMatchRepository
     {
-        public TestMatchRepository()
+        static TestMatchRepository()
         {
             int id = 1;
 
@@ -20,6 +21,13 @@ namespace DigitalDetectivesCore.Infrastructure.Repositories
             {
                 player.GetType().GetProperty("Id").SetValue(player, ++id);
             }
+
+            match.GetType().GetProperty("CurrentPlayerId").SetValue(match, match.CurrentPlayer.Id);
+        }
+
+        public TestMatchRepository(IMediator mediator)
+        {
+            this.mediator = mediator;
         }
 
         public Task Add(Match match)
@@ -44,9 +52,17 @@ namespace DigitalDetectivesCore.Infrastructure.Repositories
 
         public Task Save()
         {
+            foreach (INotification notification in match.GameEvents)
+            {
+                mediator.Publish(notification);
+            }
+
+            match.ClearEvents();
+
             return Task.CompletedTask;
         }
 
-        private Match match;
+        private IMediator mediator;
+        static private Match match;
     }
 }
