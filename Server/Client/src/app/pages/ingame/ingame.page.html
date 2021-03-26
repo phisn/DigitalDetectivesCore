@@ -1,6 +1,0 @@
-<ng-container *ngIf="model != null">
-	<ng-container [ngSwitch]="model.type">
-		<app-ingame-player *ngSwitchCase="StateType.Detective"></app-ingame-player>
-		<app-ingame-player *ngSwitchCase="StateType.Villian"></app-ingame-player>
-	</ng-container>
-</ng-container>
