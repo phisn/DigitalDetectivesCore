@@ -49,7 +49,7 @@ namespace DigitalDetectivesCore.Game.Models.Match
             : Station.At(path[^1].To.Position);
 
         public Route RouteWith(long target, TicketType type)
-            => Route.RoutesBetween(Position(), Models.Match.Station.At(target))
+            => Route.RoutesBetween(Position(), Station.At(target))
                 .FirstOrDefault(r => r.Type == type);
 
         public List<Route> ValidRoutes()

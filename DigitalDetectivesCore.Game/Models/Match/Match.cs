@@ -43,7 +43,7 @@ namespace DigitalDetectivesCore.Game.Models.Match
             players.Add(CurrentPlayer = new Player(
                 this,
                 initial[0].Position,
-                0,
+                -1,
                 PlayerColor.Villian,
                 settings.VillianTickets));
         }
@@ -132,6 +132,7 @@ namespace DigitalDetectivesCore.Game.Models.Match
                 }
 
                 CurrentPlayer = player;
+                CurrentPlayerId = CurrentPlayer.Id;
             }
 
             // ensure next player has any valid moves
